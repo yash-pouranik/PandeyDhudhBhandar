@@ -25,7 +25,7 @@ app.use(session({
 }));
 
 // --- DATABASE CONNECTION ---
-mongoose.connect(process.env.ATLAS, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.ATLAS);
 
 
 // --- AUTHENTICATION MIDDLEWARE ---
