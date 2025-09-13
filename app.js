@@ -71,7 +71,7 @@ app.get('/logout', (req, res) => {
 
 // --- PROTECTED APPLICATION ROUTES ---
 
-app.get('/', (req, res) => res.redirect('/login'));
+app.get('/', isAuthenticated, (req, res) => res.redirect('/login'));
 app.use('/customers', isAuthenticated, customerRoutes);
 
 
