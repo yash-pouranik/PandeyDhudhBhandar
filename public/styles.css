@@ -292,3 +292,22 @@ html, body {
 #search-input {
   padding-left: 40px; /* Make room for the icon */
 }
+
+
+footer a{
+  padding: 2px;
+  text-decoration: none;
+  border-bottom: 1px solid white;
+  color: var(--bg-1);
+}
+
+footer{
+  height: 100px;
+  background-color: var(--accent-dark);
+  color: var(--bg-1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  margin-top: 20px;
+}
