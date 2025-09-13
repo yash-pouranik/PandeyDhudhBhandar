@@ -4,6 +4,17 @@ const router = express.Router();
 const Customer = require('../models/customer');
 const Transaction = require('../models/tracsactions');
 
+router.get('/', async (req, res) => {
+  try {
+    const customers = await Customer.find({});
+    res.render('customers', { customers });
+  } catch (err) {
+    console.error("Error fetching customers:", err);
+    res.status(500).send("Server error");
+  }
+});
+
+
 // Create customer
 router.post('/add', async (req, res) => {
   const { name, phone, address } = req.body;

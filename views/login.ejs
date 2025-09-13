@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login - Udhaar Manager</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+  <div class="container" style="max-width: 400px; margin-top: 50px;">
+    <div class="header">
+      <div class="brand">
+        <div class="logo">Pandey Dhudh Bhandar</div>
+        <div>
+          <h1 class="h1">Owner Login</h1>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <form action="/login" method="post">
+        <div class="form-row">
+          <label for="password" class="small text-muted" style="margin-bottom: 4px;">Enter your password</label>
+          <input type="password" name="password" id="password" class="input" required>
+        </div>
+        <% if (error) { %>
+          <div class="chip positive" style="width: 100%; text-align: center; margin-bottom: 10px;"><%= error %></div>
+        <% } %>
+        <button type="submit" class="btn">Login</button>
+      </form>
+    </div>
+  </div>
+
+</body>
+</html>
