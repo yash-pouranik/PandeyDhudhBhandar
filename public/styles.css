@@ -10,7 +10,7 @@
   --accent-dark: #1e40af; 
   --danger: #dc2626;
   --success: #16a34a;
-  --glass: rgba(255, 84, 84, 0.299);
+  --glass: rgba(255, 96, 96, 0.157);
   --shadow: 0 6px 18px rgba(16, 24, 40, 0.08);
   --radius: 12px;
   --maxw: 1024px;
@@ -72,7 +72,9 @@ html, body {
 .btn:hover { background: var(--accent-dark); transform: translateY(-1px); }
 .btn:active { transform: translateY(0); }
 
-.btn.ghost { background: transparent; border: 1px solid #e6e9ef; color: var(--accent-dark); }
+.btn.ghost { 
+  background: transparent;color: var(--accent-dark);
+}
 .btn.ghost:hover { background: #f6f9ff; border-color: #d1d9e6; }
 .btn.danger { background: var(--danger); }
 .btn.danger:hover { background: #b91c1c; }
@@ -149,7 +151,7 @@ html, body {
 
 /* dashboard row */
 .dashboard { display: flex; flex-direction: column; gap: 12px; margin-bottom: 12px; }
-.kpi { padding: 16px; border-radius: 10px; background: linear-gradient(180deg, var(--glass), #fff); border: 1px solid #f1f5f9; }
+.kpi { padding: 16px; border-radius: 10px; background: linear-gradient(180deg, var(--glass)); border: 1px solid #f1f5f9; }
 .kpi .value { font-size: 20px; font-weight: 800; color: var(--danger); }
 
 /* ledger */
@@ -218,15 +220,22 @@ html, body {
   border-radius: var(--radius);
 }
 
+  .table-list{
+    width: 100%;
+  }
+  .customer-row{
+    border-bottom: 2px solid black !important;
+  }
 
 
-
-/* --- DESKTOP ENHANCEMENTS --- */
+/* --- DESKTOP ENHANCEMENTS --- 
+*/
 @media (min-width: 768px) {
   .container { padding: 24px; }
   .header { flex-direction: row; align-items: center; justify-content: space-between; }
   .h1 { font-size: 24px; }
   
+
   /* Show form container on desktop */
   .form-container { display: block; }
   .fab { display: none; } /* Hide FAB on desktop */
@@ -238,6 +247,14 @@ html, body {
   .form-row .input[name="phone"], .form-row .input[name="note"] { flex: 1.5; }
 
   /* Revert customer list table to standard layout on desktop */
+
+  .customer-row{
+    border-bottom: 1px solid black !important;
+  }
+
+  .table-list{
+    width: 100%;
+  }
   .table-list thead { display: table-header-group; }
   .table-list tr { display: table-row; border-bottom: 1px solid #f1f5f9; }
   .table-list td { display: table-cell; padding: 12px; vertical-align: middle; }
