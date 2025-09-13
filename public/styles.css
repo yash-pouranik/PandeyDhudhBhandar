@@ -147,7 +147,7 @@ html, body {
 .chip { display: inline-block; padding: 6px 12px; border-radius: 999px; font-weight: 600; font-size: 14px; }
 .chip.positive { background: rgba(220, 38, 38, 0.08); color: var(--danger); } /* owes */
 .chip.negative { background: rgba(16, 185, 129, 0.08); color: var(--success); } /* paid */
-.chip.zero { background: rgba(107, 114, 128, 0.08); color: var(--muted); } /* cleared */
+.chip.zero { background: rgb(234, 241, 255); color: var(--muted); } /* cleared */
 
 /* dashboard row */
 .dashboard { display: flex; flex-direction: column; gap: 12px; margin-bottom: 12px; }

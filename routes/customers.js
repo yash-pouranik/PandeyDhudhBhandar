@@ -7,6 +7,7 @@ const Transaction = require('../models/tracsactions');
 router.get('/', async (req, res) => {
   try {
     const customers = await Customer.find({});
+    console.log(customers)
     res.render('customers', { customers });
   } catch (err) {
     console.error("Error fetching customers:", err);
@@ -17,8 +18,8 @@ router.get('/', async (req, res) => {
 
 // Create customer
 router.post('/add', async (req, res) => {
-  const { name, phone, address } = req.body;
-  const c = new Customer({ name, phone, address });
+  const { name, phone, ID } = req.body;
+  const c = new Customer({ name, phone, ID });
   await c.save();
   res.redirect('/customers');
 });
@@ -60,5 +61,8 @@ router.get('/:id', async (req, res) => {
 
   res.render('customer_ledger', { customer, transactions, totalPaid, totalCredit });
 });
+
+
+
 
 module.exports = router;

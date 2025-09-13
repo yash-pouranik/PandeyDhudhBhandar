@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= cust.name %> - Ledger</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<div class="container">
+
+    <div class="ledger-header">
+        <div>
+            
+            <h1 class="h1"><%= cust.name %></h1>
+            <% if (cust.phone) { %><div class="sub"><%= cust.phone %></div><% } %>
+            <% if (cust.ID) { %><div class="sub"><%= cust.ID %></div><% } %>
+        </div>
+        <div class="ledger-balance-details">
+            <div class="small text-muted">Current Balance</div>
+            <% if (cust.balance > 0) { %>
+                <span class="chip positive" style="font-size: 18px;">₹<%= cust.balance.toFixed(2) %></span>
+            <% } else if (cust.balance < 0) { %>
+                <span class="chip negative" style="font-size: 18px;">₹<%= Math.abs(cust.balance).toFixed(2) %> (Advance)</span>
+            <% } else { %>
+                <span class="chip zero" style="font-size: 18px;">Cleared</span>
+            <% } %>
+        </div>
+    </div>
+
+
+    <h2 class="h1" style="font-size: 20px; margin-top: 24px; margin-bottom: 12px;">History</h2>
+    <% if (transactions.length > 0) { %>
+        <table class="table-cards">
+            <tbody>
+                <% transactions.sort((a,b) => new Date(b.date) - new Date(a.date)).forEach(t => { %>
+                    <tr>
+                        <td data-label="Date"><%= new Date(t.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %></td>
+                        <td data-label="Type">
+                            <% if (t.type === 'credit') { %>
+                                <span class="chip positive">Due</span>
+                            <% } else { %>
+                                <span class="chip negative">Payed</span>
+                            <% } %>
+                        </td>
+                        <td data-label="Amount"><strong>₹<%= t.amount.toFixed(2) %></strong></td>
+                        <% if (t.note) { %>
+                           <td data-label="Note"><%= t.note %></td>
+                        <% } %>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    <% } else { %>
+        <div class="empty-state">
+            <p>No transactions yet.</p>
+            <p class="small">Use the form above to add the first entry.</p>
+        </div>
+    <% } %>
+</div>
+
+<script>
+    // --- Script for Quick Amount Buttons ---
+    const amountInput = document.getElementById('amount-input');
+    const quickBtns = document.querySelectorAll('.quick-btn');
+    quickBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            amountInput.value = btn.textContent;
+            amountInput.focus();
+        });
+    });
+
+    // --- Script to set transaction type on submit ---
+    const transactionTypeInput = document.getElementById('transaction-type');
+    const addDueBtn = document.getElementById('add-due-btn');
+    const receivePaymentBtn = document.getElementById('receive-payment-btn');
+
+    addDueBtn.addEventListener('click', () => {
+        transactionTypeInput.value = 'credit'; // 'credit' means customer owes more
+    });
+
+    receivePaymentBtn.addEventListener('click', () => {
+        transactionTypeInput.value = 'debit'; // 'debit' means customer paid back
+    });
+</script>
+
+</body>
+</html>

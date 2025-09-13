@@ -25,8 +25,9 @@
       <div class="card">
         <form action="/customers/add" method="post" class="form-row">
           <input class="input" name="name" placeholder="Customer Name" required>
+          <input class="input" name="ID" placeholder="ID (Ex: harish72)" required>
           <input class="input" name="phone" placeholder="Phone (Optional)">
-          <input class="input" name="address" placeholder="Address (Optional)">
+          
           <button class="btn" type="submit">Add Customer</button>
         </form>
       </div>
@@ -69,7 +70,11 @@
                     <span class="customer-name"><%= c.name %></span>
                     <% if (c.address) { %><div class="small text-muted customer-address"><%= c.address %></div><% } %>
                   </a>
+                  <span style="font-size: 90%;">
+                    <%= c.ID %>
+                  </span>
                 </td>
+                
                 <td class="right">
                   <% if ((c.balance || 0) > 0) { %>
                     <span class="chip positive">₹<%= c.balance.toFixed(2) %></span>

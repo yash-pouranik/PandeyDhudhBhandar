@@ -5,6 +5,7 @@ const session = require('express-session');
 require('dotenv').config(); // Loads variables from .env file
 
 const customerRoutes = require('./routes/customers');
+const customer = require('./models/customer');
 
 // --- CONFIGURATION ---
 const app = express();
@@ -25,7 +26,13 @@ app.use(session({
 }));
 
 // --- DATABASE CONNECTION ---
-mongoose.connect(process.env.ATLAS);
+mongoose.connect(process.env.ATLAS)
+.then(() => {
+  console.log("done")
+})
+.catch(() => {
+  console.log("naii hua")
+});
 
 
 // --- AUTHENTICATION MIDDLEWARE ---
@@ -70,6 +77,33 @@ app.get('/logout', (req, res) => {
 
 
 // --- PROTECTED APPLICATION ROUTES ---
+app.get("/mybillingsform", (req, res) => {
+  res.render("mybillinglogin", { error: req.session.error });
+})
+
+app.post("/mybillings", async(req, res) => {
+  const ID = req.body.ID;
+  cust = await customer.findOne({ID: ID});
+  if(cust){
+    const Transaction = require("./models/tracsactions")
+      const transactions = await Transaction.find({ customer: cust._id }).sort({ date: 1 });
+    
+      let totalPaid = 0;
+      let totalCredit = 0;
+      transactions.forEach(t => {
+        if (t.type === 'payment') totalPaid += t.amount;
+        if (t.type === 'credit') totalCredit += t.amount;
+      });
+    
+      res.render('customer_billings', { cust, transactions, totalPaid, totalCredit });
+
+
+    
+  } else{
+    req.session.error = 'Invalid ID.';
+    res.redirect('/mybillings');
+  }
+})
 
 app.get('/', isAuthenticated, (req, res) => res.redirect('/customers'));
 app.use('/customers', isAuthenticated, customerRoutes);
