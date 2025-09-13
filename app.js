@@ -101,7 +101,7 @@ app.post("/mybillings", async(req, res) => {
     
   } else{
     req.session.error = 'Invalid ID.';
-    res.redirect('/mybillings');
+    res.redirect('/mybillingsform');
   }
 })
 
