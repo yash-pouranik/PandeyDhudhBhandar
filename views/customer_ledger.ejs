@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= customer.name %> - Ledger</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<div class="container">
+
+    <div class="ledger-header">
+        <div>
+            <div class="sub" style="margin-bottom: 8px;">
+                <a href="/customers" class="row-link">&larr; Back to all customers</a>
+            </div>
+            <h1 class="h1"><%= customer.name %></h1>
+            <% if (customer.phone) { %><div class="sub"><%= customer.phone %></div><% } %>
+            <% if (customer.address) { %><div class="sub"><%= customer.address %></div><% } %>
+        </div>
+        <div class="ledger-balance-details">
+            <div class="small text-muted">Current Balance</div>
+            <% if (customer.balance > 0) { %>
+                <span class="chip positive" style="font-size: 18px;">₹<%= customer.balance.toFixed(2) %></span>
+            <% } else if (customer.balance < 0) { %>
+                <span class="chip negative" style="font-size: 18px;">₹<%= Math.abs(customer.balance).toFixed(2) %> (Advance)</span>
+            <% } else { %>
+                <span class="chip zero" style="font-size: 18px;">Cleared</span>
+            <% } %>
+        </div>
+    </div>
+
+    <div class="card">
+        <form action="/customers/<%= customer._id %>/transaction" method="post">
+            <div class="form-row">
+                <input type="number" step="0.01" class="input" name="amount" id="amount-input" placeholder="Amount (₹)" required>
+                <input type="text" class="input" name="note" placeholder="Note (e.g., 1L milk)">
+            </div>
+            <div class="quick-amounts-wrapper">
+                <div class="small text-muted">Quick Add:</div>
+                <div class="quick-amounts">
+                    <button type="button" class="quick-btn">30</button>
+                    <button type="button" class="quick-btn">33</button>
+                    <button type="button" class="quick-btn">60</button>
+                    <button type="button" class="quick-btn">66</button>
+                </div>
+            </div>
+            <hr style="border:none; border-top:1px solid #f1f5f9; margin: 16px 0;">
+            <div class="form-row" style="gap: 16px;">
+                <input type="hidden" name="type" id="transaction-type" value="credit">
+                
+                <button type="submit" class="btn danger" id="add-due-btn">Add Due (Udhaar)</button>
+                <button type="submit" class="btn success" id="receive-payment-btn">Receive Payment</button>
+            </div>
+        </form>
+    </div>
+
+    <h2 class="h1" style="font-size: 20px; margin-top: 24px; margin-bottom: 12px;">History</h2>
+    <% if (transactions.length > 0) { %>
+        <table class="table-cards">
+            <tbody>
+                <% transactions.sort((a,b) => new Date(b.date) - new Date(a.date)).forEach(t => { %>
+                    <tr>
+                        <td data-label="Date"><%= new Date(t.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %></td>
+                        <td data-label="Type">
+                            <% if (t.type === 'credit') { %>
+                                <span class="chip positive">Due Added</span>
+                            <% } else { %>
+                                <span class="chip negative">Payment</span>
+                            <% } %>
+                        </td>
+                        <td data-label="Amount"><strong>₹<%= t.amount.toFixed(2) %></strong></td>
+                        <% if (t.note) { %>
+                           <td data-label="Note"><%= t.note %></td>
+                        <% } %>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    <% } else { %>
+        <div class="empty-state">
+            <p>No transactions yet.</p>
+            <p class="small">Use the form above to add the first entry.</p>
+        </div>
+    <% } %>
+</div>
+
+<script>
+    // --- Script for Quick Amount Buttons ---
+    const amountInput = document.getElementById('amount-input');
+    const quickBtns = document.querySelectorAll('.quick-btn');
+    quickBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            amountInput.value = btn.textContent;
+            amountInput.focus();
+        });
+    });
+
+    // --- Script to set transaction type on submit ---
+    const transactionTypeInput = document.getElementById('transaction-type');
+    const addDueBtn = document.getElementById('add-due-btn');
+    const receivePaymentBtn = document.getElementById('receive-payment-btn');
+
+    addDueBtn.addEventListener('click', () => {
+        transactionTypeInput.value = 'credit'; // 'credit' means customer owes more
+    });
+
+    receivePaymentBtn.addEventListener('click', () => {
+        transactionTypeInput.value = 'debit'; // 'debit' means customer paid back
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Customers - Milk Udhaar</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <div class="brand">
+        <div class="logo">Pandey Dhudh Bhandar</div>
+        <div>
+          <h1 class="h1">Udhaar Record</h1>
+          <div class="sub">Hari Boll</div>
+        </div>
+      </div>
+      <div class="sub"><strong><%= customers.length %></strong> Total Customers</div>
+    </div>
+
+    <div class="form-container" id="add-customer-form">
+      <div class="card">
+        <form action="/customers/add" method="post" class="form-row">
+          <input class="input" name="name" placeholder="Customer Name" required>
+          <input class="input" name="phone" placeholder="Phone (Optional)">
+          <input class="input" name="address" placeholder="Address (Optional)">
+          <button class="btn" type="submit">Add Customer</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="card">
+
+      <div class="search-wrapper">
+        <i class="fas fa-search search-icon"></i>
+        <input class="input" id="search-input" placeholder="Search by name or address...">
+      </div>
+      <div class="dashboard">
+        <div class="kpi">
+          <div class="small text-muted">Total Amount Due</div>
+          <div class="value">₹<%= customers.reduce((s, c) => s + (c.balance || 0), 0).toFixed(2) %></div>
+        </div>
+        <div class="kpi">
+          <div class="small text-muted">Top Debtor</div>
+          <div class="value" style="font-size: 18px; line-height: 1.4;">
+            <% const top = customers.slice().sort((a, b) => (b.balance || 0) - (a.balance || 0))[0]; %>
+            <% if (top && top.balance > 0) { %>
+              <%= top.name %> <br>
+              <span class="text-muted">₹<%= (top.balance || 0).toFixed(2) %></span>
+            <% } else { %>
+              —
+            <% } %>
+          </div>
+        </div>
+      </div>
+
+      <% if (customers.length > 0) { %>
+        <table class="table-list">
+          <thead>
+            <tr><th>Customer Details</th><th class="right">Balance</th><th class="right">Action</th></tr>
+          </thead>
+          <tbody id="customer-list-body"> <% customers.sort((a, b) => (b.balance || 0) - (a.balance || 0)).forEach(c => { %>
+              <tr class="customer-row"> <td>
+                  <a class="row-link" href="/customers/<%= c._id %>">
+                    <span class="customer-name"><%= c.name %></span>
+                    <% if (c.address) { %><div class="small text-muted customer-address"><%= c.address %></div><% } %>
+                  </a>
+                </td>
+                <td class="right">
+                  <% if ((c.balance || 0) > 0) { %>
+                    <span class="chip positive">₹<%= c.balance.toFixed(2) %></span>
+                  <% } else { %>
+                    <span class="chip zero">Cleared</span>
+                  <% } %>
+                </td>
+                <td class="right">
+                  <a class="btn ghost" href="/customers/<%= c._id %>">View Ledger</a>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+        <div class="empty-state" id="no-results" style="display: none;">
+          <p>No customers found.</p>
+        </div>
+      <% } else { %>
+        <div class="empty-state">
+          <p>No customers yet!</p>
+          <p class="small">Click the '+' button to add your first customer.</p>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+  <button class="fab" id="add-customer-btn" title="Add New Customer">+</button>
+
+  <script>
+    const addCustomerBtn = document.getElementById('add-customer-btn');
+    const addCustomerForm = document.getElementById('add-customer-form');
+
+    addCustomerBtn.addEventListener('click', () => {
+      addCustomerForm.classList.toggle('is-visible');
+      if (addCustomerForm.classList.contains('is-visible')) {
+        addCustomerForm.querySelector('input[name="name"]').focus();
+      }
+    });
+
+    // --- NEW SEARCH SCRIPT ---
+    const searchInput = document.getElementById('search-input');
+    const customerRows = document.querySelectorAll('.customer-row');
+    const noResultsMessage = document.getElementById('no-results');
+
+    searchInput.addEventListener('input', (e) => {
+      const searchTerm = e.target.value.toLowerCase();
+      let visibleCount = 0;
+
+      customerRows.forEach(row => {
+        const name = row.querySelector('.customer-name').textContent.toLowerCase();
+        const addressElement = row.querySelector('.customer-address');
+        const address = addressElement ? addressElement.textContent.toLowerCase() : '';
+
+        if (name.includes(searchTerm) || address.includes(searchTerm)) {
+          row.style.display = 'flex';
+          visibleCount++;
+        } else {
+          row.style.display = 'none';
+        }
+      });
+      
+      // Show "No results" message if no customers are visible
+      if (visibleCount === 0) {
+        noResultsMessage.style.display = 'block';
+      } else {
+        noResultsMessage.style.display = 'none';
+      }
+    });
+  </script>
+
+</body>
+</html>
